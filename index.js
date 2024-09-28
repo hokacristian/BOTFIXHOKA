@@ -9,14 +9,12 @@ const app = express();
 
 // Define allowed origins for CORS
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://6849-182-253-124-127.ngrok-free.app',
-  'https://4151-103-233-100-232.ngrok-free.app',
+//ngrok
 ];
 
 // Configure CORS
 app.use(cors({
-  origin: function (origin, callback) {
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -34,5 +32,7 @@ app.use('/auth', authRoutes);
 // Initialize WhatsApp client
 initializeClient();
 
-// Export the app for Vercel
-module.exports = app;
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
