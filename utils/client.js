@@ -2,22 +2,26 @@
 
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const { sessionPath } = require('../config/config');
-const chrome = require('@sparticuz/chrome-aws-lambda'); // Import chrome-aws-lambda
-const puppeteer = require('puppeteer-core'); // Import puppeteer-core
+const chrome = require('@sparticuz/chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
+const isVercel = process.env.NODE_ENV === 'production'; // Check if running in Vercel (or production)
+
 
 let client;
 
 // Function to initialize the WhatsApp client
 const initializeClient = async () => {
-    if (!client) { // Only initialize if client doesn't exist
+    if (!client) {
         client = new Client({
             authStrategy: new LocalAuth({
-                dataPath: sessionPath, // Session data stored in /tmp
+                dataPath: sessionPath,
                 clientId: 'client-one',
             }),
             puppeteer: {
-                executablePath: await chrome.executablePath || '/usr/bin/chromium-browser',
-                args: [...chrome.args, '--no-sandbox', '--disable-setuid-sandbox'],
+                executablePath: isVercel
+                    ? await chrome.executablePath
+                    : puppeteer.executablePath(), // Use puppeteer's default executablePath for local development
+                args: isVercel ? [...chrome.args, '--no-sandbox', '--disable-setuid-sandbox'] : [],
                 headless: true,
             },
         });
