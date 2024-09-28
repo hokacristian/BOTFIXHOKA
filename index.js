@@ -3,22 +3,21 @@ const express = require('express');
 const cors = require('cors');
 const { port } = require('./config/config');
 const authRoutes = require('./routes/authRoutes');
-const { initializeClient } = require('./utils/client'); // Import initializeClient
+const { initializeClient } = require('./utils/client');
 
 const app = express();
 
 // Define allowed origins for CORS
 const allowedOrigins = [
-  'http://localhost:5173', // Your frontend's local development URL
-  'https://6849-182-253-124-127.ngrok-free.app', // Example Ngrok URL
-  'https://4151-103-233-100-232.ngrok-free.app', // Example Ngrok URL
-  'http://localhost:5173'
+  'http://localhost:5173',
+  'https://6849-182-253-124-127.ngrok-free.app',
+  'https://4151-103-233-100-232.ngrok-free.app',
 ];
 
 // Configure CORS
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -33,9 +32,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 
 // Initialize WhatsApp client
-initializeClient(); // Ensure the client is initialized
+initializeClient();
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+// Export the app for Vercel
+module.exports = app;

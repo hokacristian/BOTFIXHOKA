@@ -2,21 +2,26 @@
 
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const { sessionPath } = require('../config/config');
+const chrome = require('@sparticuz/chrome-aws-lambda'); // Import chrome-aws-lambda
+const puppeteer = require('puppeteer-core'); // Import puppeteer-core
+
 let client;
 
 // Function to initialize the WhatsApp client
-const initializeClient = () => {
+const initializeClient = async () => {
     if (!client) { // Only initialize if client doesn't exist
         client = new Client({
             authStrategy: new LocalAuth({
-                dataPath: sessionPath, // Session data will be stored here
-                clientId: 'client-one', // Client ID for multi-session support
+                dataPath: sessionPath, // Session data stored in /tmp
+                clientId: 'client-one',
             }),
             puppeteer: {
-                headless: true, // Ensure this is true for Vercel
-                args: ['--no-sandbox', '--disable-setuid-sandbox'], // Add these args for Puppeteer to work on Vercel
-            }
+                executablePath: await chrome.executablePath || '/usr/bin/chromium-browser',
+                args: [...chrome.args, '--no-sandbox', '--disable-setuid-sandbox'],
+                headless: true,
+            },
         });
+
         client.on('qr', (qr) => {
             const qrcode = require('qrcode-terminal');
             qrcode.generate(qr, { small: true });
@@ -136,7 +141,7 @@ const initializeClient = () => {
             console.error('Client encountered an error:', error);
         });
 
-        client.initialize();
+        await client.initialize();
     }
 
     return client;
