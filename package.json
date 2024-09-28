@@ -1,26 +1,13 @@
 {
   
-    "dependencies": {
-  
-      
+   "dependencies": {
     "@sparticuz/chrome-aws-lambda": "^17.1.3",
-  
-      
+    "puppeteer-core": "17.1.3",
+    "whatsapp-web.js": "^1.18.1",
+    "express": "^4.18.2",
     "cors": "^2.8.5",
-  
-      
-    "express": "^4.21.0",
-  
-      
-    "puppeteer-core": "^17.1.3",
-  
-      
-    "qrcode-terminal": "^0.12.0",
-  
-      
-    "whatsapp-web.js": "^1.23.0"
-  
-    },
+    "qrcode-terminal": "^0.12.0"
+  },
   
     "name": "botfix",
   
